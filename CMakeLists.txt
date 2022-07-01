@@ -4,6 +4,9 @@ project(mrpgo)
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 
+# let cmake find FindMKL.cmake
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
+
 if(WIN32)
   if(NOT CMAKE_DEBUG_POSTFIX)
     set(CMAKE_DEBUG_POSTFIX d)
@@ -26,7 +29,7 @@ find_package(Eigen3 REQUIRED)
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${Boost_INCLUDE_DIR})
-include_directories(${MKL_H})
+include_directories(${MKL_INCLUDE_DIR})
 include_directories(${EIGEN3_INCLUDE_DIR})
 
 set(MRPGO_DATASET_FILES

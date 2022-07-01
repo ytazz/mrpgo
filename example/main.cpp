@@ -28,6 +28,11 @@ int main(int argc, char** argv){
     string inFilename;
     string outFilename;
 
+    // default parameters
+    corrector.numIter  = 10;
+    corrector.maxLevel = 3;
+    corrector.verbose  = false;
+
     // process command line arguments
     if(argc == 1){
         PrintHelp();
@@ -71,6 +76,11 @@ int main(int argc, char** argv){
         else{
             inFilename = argv[i];
         }
+    }
+
+    if(inFilename.empty()){
+        printf("filename not specified\n");
+        return -1;
     }
 
     if(loader.Load(inFilename, &pg)){
