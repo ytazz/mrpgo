@@ -32,8 +32,10 @@ bool Loader::Load(string filename, Posegraph* pg){
 				continue;
 	
 			Node* n = new Node(pg);
+			n->index     = csv.Get<int>   (i, j++);
 			n->p.val.x() = csv.Get<double>(i, j++);
 			n->p.val.y() = csv.Get<double>(i, j++);
+			n->theta.val = csv.Get<double>(i, j++);
 			
 			// recognize as 2D posegraph
 			pg->space = Posegraph::Space::SE2;
@@ -45,6 +47,7 @@ bool Loader::Load(string filename, Posegraph* pg){
 				continue;
 			
 			Node* n = new Node(pg);
+			n->index     = csv.Get<int>   (i, j++);
 			n->p.val.x() = csv.Get<double>(i, j++);
 			n->p.val.y() = csv.Get<double>(i, j++);
 			n->p.val.z() = csv.Get<double>(i, j++);

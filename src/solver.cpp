@@ -105,6 +105,10 @@ double Solver::CalcStepSize(){
 }
 
 void Solver::Step(){
+	for(auto& var : vars){
+		var->ResetState();
+	}
+
 	timer.CountUS();
 	CalcDirection();
 	status.timeDir = timer.CountUS();

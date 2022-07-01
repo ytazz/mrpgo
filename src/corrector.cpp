@@ -351,6 +351,20 @@ void Corrector::Analyze(){
 		}
 	}
 
+	vars.clear();
+	if(pg->space == Posegraph::Space::SE2){
+		for(Node* n : pg->nodes){
+			vars.push_back(&n->p);
+			vars.push_back(&n->theta);
+		}
+	}
+	else{
+		for(Node* n : pg->nodes){
+			vars.push_back(&n->p);
+			vars.push_back(&n->q);
+		}
+	}
+
 	biasFactor = 1.0;
 }
 
@@ -477,7 +491,6 @@ void Corrector::CalcCost(){
     }
 
     tPrepare2 = timer.CountUS();
-    //DSTR << "prepare2: " << tPrepare2 << endl;
     
     timer.CountUS();
 
@@ -499,17 +512,6 @@ void Corrector::CalcCost(){
 	
 #pragma omp parallel
 		{
-			/*
-			#pragma omp single
-			for(int ib = 0; ib < lv.blocks.size(); ib++){
-				Block& bl = lv.blocks[ib];
-			
-				for(auto it = bl.Lxx_Lx_b_map.begin(); it != bl.Lxx_Lx_b_map.end(); it++){
-					mat_vec_mul(it->Lxx, it->node->b, it->Lx, 1.0, 1.0);
-				}
-			}
-			*/
-		
 			if(pg->space == Posegraph::Space::SE2){
 				#pragma omp for
 				for(int ib = 0; ib < lv.blocks.size(); ib++){
@@ -584,39 +586,6 @@ void Corrector::CalcDirection(){
 		vec_clear(n->ddx);	
 	}
 
-	/*
-	// test code for directly solving transformed equation
-	if(!linsolver){
-		linsolver = new LinearSolverCholmod();
-		linsolver->Init(Lxx);
-	}
-	SparseVector dx;
-	dx.Resize(nodes.size(), dim);
-	linsolver->Solve(Lxx, Lx, dx);
-	for(auto it = dx.begin(); it != dx.end(); it++){
-		vec_copy(it->second, nodes[it->first]->dx);
-	}
-	*/
-
-	/*
-	// warm start
-	for(Node* n : nodes){
-		for(int j = 0; j < n->dx.n; j++)
-			n->dx.vh[j] *= shrinkRate;
-		vec_clear(n->ddx);	
-	}
-	for(int i = maxLevel; i >= minLevel; i--){
-        Level& lv  = levels[i];
-		for(int j = 0; j < lv.blocks.size(); j++){
-			Block& bl = lv.blocks[j];
-			
-			for(auto it = bl.Lxx_Lx_map.begin(); it != bl.Lxx_Lx_map.end(); it++){
-				mat_vec_mul(it->Lxx, it->node->dx, it->Lx, 1.0, 1.0);
-			}
-		}
-	}
-	*/
-	
 	for(int n = 0; n < numIter; n++){
 	    for(int i = maxLevel; i >= minLevel; i--){
             Level& lv  = levels[i];
@@ -647,10 +616,7 @@ void Corrector::CalcDirection(){
 					vec_copy(it->ddx_block, it->node->ddx);
 					vec_add (it->ddx_block, it->node->dx );
 				}
-		        
-                //int tSolve = timer2.CountUS();
-				//DSTR << " i: " << i << " solver: " << tSolve << " thread: " << omp_get_thread_num() << endl;
-            }
+		    }
 			int tSolve = timer.CountUS();
 
 			timer.CountUS();
@@ -662,8 +628,7 @@ void Corrector::CalcDirection(){
 				}
 			}
 			int tUpdate = timer.CountUS();
-			//DSTR << "i: " << i << " solve: " << tSolve << "  update: " << tUpdate << endl;
-
+			
 			if(fileStat)
 				fprintf(fileStat, ", %d, %d", tSolve, tUpdate);
 	    }
@@ -690,6 +655,24 @@ void Corrector::CalcDirection(){
             }
         }
     }
+
+	if(pg->space == Posegraph::Space::SE2){
+		for(Node* n : pg->nodes){
+			n->p    .dx[0] = n->dx_abs(0);
+			n->p    .dx[1] = n->dx_abs(1);
+			n->theta.dx[0] = n->dx_abs(2);
+		}
+	}
+	else{
+		for(Node* n : pg->nodes){
+			n->p.dx[0] = n->dx_abs(0);
+			n->p.dx[1] = n->dx_abs(1);
+			n->p.dx[2] = n->dx_abs(2);
+			n->q.dx[0] = n->dx_abs(3);
+			n->q.dx[1] = n->dx_abs(4);
+			n->q.dx[2] = n->dx_abs(5);
+		}
+	}
 	
 }
 
