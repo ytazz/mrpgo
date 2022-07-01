@@ -33,7 +33,9 @@ include_directories(${MKL_INCLUDE_DIR})
 include_directories(${EIGEN3_INCLUDE_DIR})
 
 set(MRPGO_DATASET_FILES
-  "dataset/intel.g2o" )
+  "dataset/intel.g2o"
+  "dataset/sphere2500.g2o"
+  )
 
 add_library(mrpgo
   include/loader.h

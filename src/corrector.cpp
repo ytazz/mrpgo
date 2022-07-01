@@ -25,12 +25,7 @@ Corrector::Corrector(Posegraph* _pg){
 	maxLevel  = 0;
 	blockSize = 100;
 	
-	stepSizeMin     = 0.0;
-	stepSizeMax     = 1.0;
-	stepSizeCutoff  = 0.001;
-	hastyStepSize   = false;
-	verbose         = false;
-    maxRotation     = 1.0;
+	maxRotation     = 1.0;
     regularization  = 0.001;
 	numIter         = 1;
 	shrinkRate      = 0.0;
@@ -38,6 +33,13 @@ Corrector::Corrector(Posegraph* _pg){
 	biasDecayRate   = 1.0;
 	solverType      = SolverType::Custom;
 	errorThreshold  = 0.0;
+
+	fileStat = 0;
+}
+
+Corrector::~Corrector(){
+	if(fileStat)
+		fclose(fileStat);
 }
 
 void Corrector::SetSolverType(string str){
@@ -356,23 +358,25 @@ void Corrector::Correct(){
 	if(first){
 		pg->Analyze();
 		Analyze();
-				
-		fileLog = fopen("log.csv", "w");
-		fprintf(fileLog, "Tpre1, Tpre2, Tpre3");
-		for(int i = maxLevel; i >= 0; i--){
-			fprintf(fileLog, ", Tsolve%d, Tupdate%d", i, i);
-		}
-		fprintf(fileLog, ", cost, step\n");
 	
-		//DSTR << " nodes: " << (int)nodes.size()
-		//	 << " links: " << (int)links.size()
-		//	 << endl;
+		if(!statFilename.empty()){
+			fileStat = fopen(statFilename.c_str(), "w");
+			if(fileStat){
+				fprintf(fileStat, "Tpre1, Tpre2, Tpre3");
+				for(int i = maxLevel; i >= 0; i--){
+					fprintf(fileStat, ", Tsolve%d, Tupdate%d", i, i);
+				}
+				fprintf(fileStat, ", cost, step\n");
+			}
+		}
+	
 		first = false;
 	}
-	//if(status.objDiff > errorThreshold*status.obj){
+	
 	Solver::Step();
-	//}
-	fprintf(fileLog, ", %f, %f\n", status.obj, status.stepSize);
+	
+	if(fileStat)
+		fprintf(fileStat, ", %f, %f\n", status.obj, status.stepSize);
 	
 	biasFactor *= biasDecayRate;
 }
@@ -566,9 +570,9 @@ void Corrector::CalcCost(){
     }
 
     tPrepare3 = timer.CountUS();
-    //DSTR << "prepare3: " << tPrepare3 << endl;
     
-    fprintf(fileLog, "%d, %d, %d", tPrepare1, tPrepare2, tPrepare3);
+	if(fileStat)
+		fprintf(fileStat, "%d, %d, %d", tPrepare1, tPrepare2, tPrepare3);
 }
 
 void Corrector::CalcDirection(){
@@ -660,7 +664,8 @@ void Corrector::CalcDirection(){
 			int tUpdate = timer.CountUS();
 			//DSTR << "i: " << i << " solve: " << tSolve << "  update: " << tUpdate << endl;
 
-			fprintf(fileLog, ", %d, %d", tSolve, tUpdate);
+			if(fileStat)
+				fprintf(fileStat, ", %d, %d", tSolve, tUpdate);
 	    }
     }
 	

@@ -19,6 +19,7 @@ void PrintHelp(){
            "----------------------------------------\n"
            "-i <int>    specify number of iterations\n"
            "-L <int>    specify max level           \n"
+           "-s <string> specify statistics file name\n"
            "-o <string> specify output file name    \n"
            "-v          verbose output              \n"
     );
@@ -29,9 +30,9 @@ int main(int argc, char** argv){
     string outFilename;
 
     // default parameters
-    corrector.numIter  = 10;
+    int numIter = 10;
     corrector.maxLevel = 3;
-    corrector.verbose  = false;
+    corrector.param.verbose  = false;
 
     // process command line arguments
     if(argc == 1){
@@ -47,7 +48,7 @@ int main(int argc, char** argv){
             if(++i < argc){
                 int n = atoi(argv[i]);
                 if(n > 0){
-                    corrector.numIter = n;
+                    numIter = n;
                 }
                 else{
                     printf("error: number of iterations must be > 0\n");
@@ -66,7 +67,12 @@ int main(int argc, char** argv){
             }
         }
         else if( strcmp(argv[i], "-v"   ) == 0 ){
-            corrector.verbose = true;
+            corrector.param.verbose = true;
+        }
+        else if( strcmp(argv[i], "-s"   ) == 0 ){
+            if(++i < argc){
+                corrector.statFilename = argv[i];
+            }
         }
         else if( strcmp(argv[i], "-o"   ) == 0 ){
             if(++i < argc){
@@ -84,14 +90,16 @@ int main(int argc, char** argv){
     }
 
     if(loader.Load(inFilename, &pg)){
-        printf("loaded %s\n", inFilename.c_str());
+        printf("loaded %s as %s posegraph\n", inFilename.c_str(), pg.space == Posegraph::Space::SE2 ? "2D" : "3D");
     }
     else{
         printf("error loading %s\n", inFilename.c_str());
         return -1;
     }
 
-    corrector.Correct();
+    for(int i = 0; i < numIter; i++){
+        corrector.Correct();
+    }
 
     if(!outFilename.empty()){
         loader.Save(outFilename, &pg);

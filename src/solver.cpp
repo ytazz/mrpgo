@@ -15,11 +15,11 @@ static const double eps = 1.0e-10;
 
 Solver::Param::Param(){
 	verbose         = false;
-	minStepSize     =  0.01;
-	maxStepSize     = 10.0;
-	cutoffStepSize  =  0.001;
+	minStepSize     = 0.1;
+	maxStepSize     = 1.0;
+	cutoffStepSize  = 0.1;
 	hastyStepSize   = false;
-	regularization  =  0.001;
+	regularization  = 0.001;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

@@ -20,11 +20,6 @@ public:
 		};
 	};
 
-	double    stepSizeMin;
-	double    stepSizeMax;
-	double    stepSizeCutoff;
-	bool      hastyStepSize;
-	bool      verbose;
 	int       levelBase;
 	int       minLevel;
 	int       maxLevel;
@@ -111,7 +106,8 @@ public:
 	SparseMatrix    Lxx;
 	LinearSolver*   linsolver;
 
-	FILE*  fileLog;
+	std::string  statFilename;
+	FILE*        fileStat;
 	
 public:
     void  SetSolverType (std::string str);
@@ -124,7 +120,8 @@ public:
     virtual double  CalcObjective();
 	virtual void    CalcDirection();
 
-    Corrector(Posegraph* _pg);
+     Corrector(Posegraph* _pg);
+	~Corrector();
 };
 
 }
