@@ -508,12 +508,7 @@ inline void  mat_eig(const Matrix& m, Vector& wr, Vector& wi, Matrix& vl, Matrix
 // inverse of general matrix
 inline void mat_inv_gen(const Matrix& m, Matrix& y){
 	mat_copy(m, y);
-#ifdef MKL_ILP64
-	typedef __int64	index_t;
-#else
-	typedef int index_t;
-#endif
-	std::vector<index_t> pivot; pivot.resize(m.m);
+	std::vector<MKL_INT> pivot; pivot.resize(m.m);
 	LAPACKE_dgetrf(LAPACK_COL_MAJOR, m.m, m.m, &y.vh[0], y.l, &pivot[0]);
 	LAPACKE_dgetri(LAPACK_COL_MAJOR, m.m,      &y.vh[0], y.l, &pivot[0]);
 }

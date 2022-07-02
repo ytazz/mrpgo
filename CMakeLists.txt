@@ -4,7 +4,10 @@ project(mrpgo)
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 
+set(USE_CHOLMOD false CACHE BOOL "use cholmod or not")
+
 # let cmake find FindMKL.cmake
+# note: links with lp64 version (not ilp64)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 
 if(WIN32)
@@ -26,6 +29,11 @@ endif()
 find_package(Boost  REQUIRED)
 find_package(MKL    REQUIRED)
 find_package(Eigen3 REQUIRED)
+
+if(USE_CHOLMOD)
+    find_package(SuiteSparse)
+	add_compile_definitions(USE_CHOLMOD)
+endif()
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${Boost_INCLUDE_DIR})
@@ -65,13 +73,15 @@ add_library(mrpgo
    example/main.cpp
  )
 
- target_link_libraries(mrpgo_app mrpgo)
- target_link_libraries(mrpgo
-    ${MKL_ROOT}/lib/intel64/mkl_intel_lp64.lib
-    ${MKL_ROOT}/lib/intel64/mkl_sequential.lib
-    ${MKL_ROOT}/lib/intel64/mkl_core.lib
+target_link_libraries(mrpgo_app mrpgo)
+target_link_libraries(mrpgo
+    ${MKL_LIBRARIES}
     ${Boost_LIBRARIES}
- )
+)
+if(USE_CHOLMOD)
+	target_link_libraries(mrpgo SuiteSparse::cholmod)
+endif()
+
 install(TARGETS mrpgo mrpgo_app
   EXPORT        mrpgoExport
   RUNTIME       DESTINATION bin
