@@ -32,6 +32,7 @@ public:
 	double    biasFactor;
 	int       solverType;
 	double    errorThreshold;
+	int       numThreads;   ///< number of parallel threads.  0: use maximum available
     
     double    J;
 	double    maxError;

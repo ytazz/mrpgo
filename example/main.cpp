@@ -68,6 +68,11 @@ int main(int argc, char** argv){
                 }
             }
         }
+        else if( strcmp(argv[i], "-p"   ) == 0 ){
+            if(++i < argc){
+                corrector.numThreads = atoi(argv[i]);
+            }
+        }
         else if( strcmp(argv[i], "-v"   ) == 0 ){
             corrector.param.verbose = true;
         }

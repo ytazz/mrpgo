@@ -33,6 +33,7 @@ Corrector::Corrector(Posegraph* _pg){
 	biasDecayRate   = 1.0;
 	solverType      = SolverType::Custom;
 	errorThreshold  = 0.0;
+	numThreads      = 0;
 
 	fileStat = 0;
 }
@@ -370,8 +371,23 @@ void Corrector::Analyze(){
 
 void Corrector::Correct(){
 	if(first){
+		// set number of parallel threads
+		if(numThreads > 0){
+			omp_set_num_threads(numThreads);
+			printf("using %d threads\n", numThreads);
+		}
+		else{
+			printf("using maximum available threads: %d\n", omp_get_max_threads());
+		}
+
+		printf("analyzing\n");
+		
+		timer.CountUS();
 		pg->Analyze();
 		Analyze();
+		int Tanalyze = timer.CountUS();
+
+		printf(" elapsed time: %d [us]\n");
 	
 		if(!statFilename.empty()){
 			fileStat = fopen(statFilename.c_str(), "w");
