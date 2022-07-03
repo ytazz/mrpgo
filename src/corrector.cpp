@@ -387,7 +387,7 @@ void Corrector::Correct(){
 		Analyze();
 		int Tanalyze = timer.CountUS();
 
-		printf(" elapsed time: %d [us]\n");
+		printf(" elapsed time: %d [us]\n", Tanalyze);
 	
 		if(!statFilename.empty()){
 			fileStat = fopen(statFilename.c_str(), "w");

@@ -42,7 +42,17 @@ include_directories(${EIGEN3_INCLUDE_DIR})
 
 set(MRPGO_DATASET_FILES
   "dataset/intel.g2o"
+  "dataset/city10000.g2o"
+  "dataset/city10000b.g2o"
   "dataset/sphere2500.g2o"
+  "dataset/cubicle.g2o"
+  "dataset/cubicle_original.g2o"
+  "dataset/grid3D.g2o"
+  "dataset/m3500.g2o"
+  "dataset/parking-garage.g2o"
+  "dataset/rim.g2o"
+  "dataset/rim_original.g2o"
+  "dataset/torus3D.g2o"
   )
 
 add_library(mrpgo
