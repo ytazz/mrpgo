@@ -32,8 +32,8 @@ int main(int argc, char** argv){
     // default parameters
     int numIter = 10;
     corrector.maxLevel = 3;
-    //corrector.solverType     = Corrector::SolverType::Cholmod;
-    corrector.solverType = Corrector::SolverType::Custom;
+    corrector.solverType     = Corrector::SolverType::Cholmod;
+    //corrector.solverType = Corrector::SolverType::Custom;
     corrector.verbose    = false;
 
     // process command line arguments
