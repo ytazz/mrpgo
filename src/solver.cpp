@@ -14,7 +14,6 @@ static const double eps = 1.0e-10;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 Solver::Param::Param(){
-	verbose         = false;
 	minStepSize     = 0.1;
 	maxStepSize     = 1.0;
 	cutoffStepSize  = 0.1;
@@ -123,9 +122,6 @@ void Solver::Step(){
    	double objPrev = status.obj;
 	status.obj      = CalcObjective();
 	status.objDiff  = status.obj - objPrev;
-	if(param.verbose){
-		printf("iter:%d, step:%f, obj:%f\n", status.iterCount, status.stepSize, status.obj);
-	}
 	status.iterCount++;
 
 }

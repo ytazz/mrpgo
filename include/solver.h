@@ -7,7 +7,6 @@ namespace mrpgo{;
 class Solver{
 public:
 	struct Param{
-		bool     verbose;
 		double   minStepSize;
 		double   maxStepSize;
 		double   cutoffStepSize;

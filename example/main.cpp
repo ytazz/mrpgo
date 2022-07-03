@@ -33,8 +33,8 @@ int main(int argc, char** argv){
     int numIter = 10;
     corrector.maxLevel = 3;
     //corrector.solverType     = Corrector::SolverType::Cholmod;
-    corrector.solverType     = Corrector::SolverType::Custom;
-    corrector.param.verbose  = false;
+    corrector.solverType = Corrector::SolverType::Custom;
+    corrector.verbose    = false;
 
     // process command line arguments
     if(argc == 1){
@@ -74,7 +74,7 @@ int main(int argc, char** argv){
             }
         }
         else if( strcmp(argv[i], "-v"   ) == 0 ){
-            corrector.param.verbose = true;
+            corrector.verbose = true;
         }
         else if( strcmp(argv[i], "-s"   ) == 0 ){
             if(++i < argc){
@@ -107,6 +107,8 @@ int main(int argc, char** argv){
     for(int i = 0; i < numIter; i++){
         corrector.Correct();
     }
+
+    printf("total elapsed time: %d\n", corrector.Ttotal);
 
     if(!outFilename.empty()){
         loader.Save(outFilename, &pg);

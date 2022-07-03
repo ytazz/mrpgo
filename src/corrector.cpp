@@ -34,6 +34,7 @@ Corrector::Corrector(Posegraph* _pg){
 	solverType      = SolverType::Custom;
 	errorThreshold  = 0.0;
 	numThreads      = 0;
+	verbose         = false;
 
 	fileStat = 0;
 }
@@ -382,10 +383,10 @@ void Corrector::Correct(){
 
 		printf("analyzing\n");
 		
-		timer.CountUS();
+		timer2.CountUS();
 		pg->Analyze();
 		Analyze();
-		int Tanalyze = timer.CountUS();
+		int Tanalyze = timer2.CountUS();
 
 		printf(" elapsed time: %d [us]\n", Tanalyze);
 	
@@ -400,10 +401,17 @@ void Corrector::Correct(){
 			}
 		}
 	
+		Ttotal = Tanalyze;
 		first = false;
 	}
 	
+	timer2.CountUS();
 	Solver::Step();
+	int Tstep = timer2.CountUS();
+
+	printf("iter:%d, step:%f, obj:%f time: %d\n", status.iterCount, status.stepSize, status.obj, Tstep);
+
+	Ttotal += Tstep;
 	
 	if(fileStat)
 		fprintf(fileStat, ", %f, %f\n", status.obj, status.stepSize);

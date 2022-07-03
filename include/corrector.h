@@ -33,9 +33,12 @@ public:
 	int       solverType;
 	double    errorThreshold;
 	int       numThreads;   ///< number of parallel threads.  0: use maximum available
+	bool      verbose;
     
     double    J;
 	double    maxError;
+
+	int       Ttotal;
 
     struct Block{
 		struct LxMap{
