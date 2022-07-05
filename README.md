@@ -3,7 +3,7 @@
 ## Abstract
 
 A pose-graph optimization algorithm based on multi-resolution transform and parallel block-Gauss-Seidel iteration.
-Check out the RA-L paper (***) for details.
+Check out the [RA-L paper](http://www2.kobe-u.ac.jp/~tazaki/docs/tazaki_ral2022.pdf) for details.
 
 ## Building
 
