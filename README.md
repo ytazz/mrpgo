@@ -25,5 +25,5 @@ It recognizes VERTEX_SE2/EDGE_SE2 for 2D posegraphs,
 Output file can be specified with -o option.
 
 Visualization capability is not implemented.
-Load the output posegraph file on g2o_viewer (for example) to see if its properly optimized.
+Load the output posegraph file on g2o_viewer (for example) to see if it's properly optimized.
 
