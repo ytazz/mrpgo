@@ -118,8 +118,8 @@ public:
 	void  Analyze       ();
 	void  Correct       ();
 	void  CalcCost      ();
-	void  Print         (bool ordered);
-	void  PrintDot      ();
+	void  PrintSparsity (const char* filename, bool ordered);
+	void  PrintDot      (const char* filename);
 
     virtual double  CalcObjective();
 	virtual void    CalcDirection();

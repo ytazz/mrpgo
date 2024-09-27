@@ -40,6 +40,7 @@ public:
 public:
     void  SetSpace(std::string str);
 	void  Analyze ();
+    void  PrintCsv();
 
     Posegraph();
 };

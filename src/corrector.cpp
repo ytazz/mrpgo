@@ -771,19 +771,19 @@ struct CustomPrintCallback : SparseMatrix::PrintCallback{
 	}
 };
 
-void Corrector::Print(bool ordered){
+void Corrector::PrintSparsity(const char* filename, bool ordered){
 	int N = pg->nodes.size();
 
 	CustomPrintCallback callback;
 	callback.owner   = this;
 	callback.ordered = ordered;
    
-	ofstream file("hessian.dat");
+	ofstream file(filename);
 	Lxx.PrintSparsity(file, &callback);
 }
 
-void Corrector::PrintDot(){
-	ofstream file("posegraph.dot");
+void Corrector::PrintDot(const char* filename){
+	ofstream file(filename);
 
 	file << "digraph Graph{" << endl;
 
